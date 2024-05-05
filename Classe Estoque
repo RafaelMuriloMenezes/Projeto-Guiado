@@ -1,0 +1,99 @@
+package sistemaGestaoEstoque.entities;
+
+import java.util.ArrayList;
+
+public class Estoque {
+    private ArrayList<Produto> produtos;
+
+    public Estoque(){
+        this.produtos = new ArrayList<Produto>();
+        System.out.println("Estoque criado");
+    }
+
+    private int indiceProduto(String nome){
+        int indice = -1;
+        for (int i = 0; i < produtos.size(); i++){
+            Produto produto = produtos.get(i);
+            if (produto.getNome().equals(nome)){
+                indice = i;
+            }
+        }
+        return indice;
+    }
+    private boolean checaCadastro(String nome){
+        boolean cadastrado = false;
+        if (indiceProduto(nome) != -1){
+            cadastrado = true;
+        }
+        return cadastrado;
+    }
+
+    // CRUD
+    // Funções Create
+    public void adicionaProduto(Produto produto) {
+        produtos.add(produto);
+        System.out.printf("Produto '%s' adicionado ao estoque\n", produto.getNome());
+    }
+
+    // Funções Read
+    public void listaProdutos() {
+        if (produtos.isEmpty()){
+            System.out.println("Não há produtos cadastrados no estoque");
+        }
+        else {
+            for (Produto produto : produtos) {
+                System.out.printf("%s - %d unidade(s) (R$ %.2f cada)\n", produto.getNome(), produto.getQuantidade(), produto.getPreco());
+            }
+        }
+    }
+
+    // Funções Update
+    public void atualizaQuantidadeProduto(Produto produto, int novaQuantidade){
+        if (checaCadastro(produto.getNome())) {
+            if (novaQuantidade > 0) {
+                produto.setQuantidade(novaQuantidade);
+                System.out.printf("Quantidade do produto '%s' atualizada\n", produto.getNome());
+            } else {
+                System.out.println("A nova quantidade de produto não pode ser menor que zero. Por favor, insira um valor válido");
+            }
+        }
+        else {
+            System.out.printf("Produto '%s' não encontrado no estoque\n", produto.getNome());
+        }
+    }
+    public void atualizaPrecoProduto(Produto produto, double novoPreco){
+        if (checaCadastro(produto.getNome())) {
+            if (novoPreco > 0) {
+                produto.setPreco(novoPreco);
+                System.out.printf("Preço do produto '%s' atualizado\n", produto.getNome());
+            } else {
+                System.out.println("O novo preço não pode ser menor que zero. Por favor, insira um valor válido");
+            }
+        }
+        else {
+            System.out.printf("Produto '%s' não encontrado no estoque\n", produto.getNome());
+        }
+    }
+    public void atualizaProduto(String nome, int quantidade, double preco){
+        if (checaCadastro(nome)){
+            Produto produto = produtos.get(indiceProduto(nome));
+            atualizaQuantidadeProduto(produto, quantidade);
+            atualizaPrecoProduto(produto, preco);
+            System.out.printf("Informações do produto '%s' atualizadas\n", produto.getNome());
+        }
+        else {
+            System.out.println("Produto não encontrado no estoque");
+        }
+    }
+
+    // Funções Delete
+    public void removeProduto(String nome){
+        if (checaCadastro(nome)){
+            produtos.remove(indiceProduto(nome));
+            System.out.println("Produto removido do estoque com sucesso");
+        }
+        else {
+            System.out.println("Produto não encontrado no estoque");
+        }
+    }
+}
